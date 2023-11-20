@@ -10,7 +10,9 @@
   "author": "Sharon Edri",
   "license": "ISC",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.1",
-    "node-telegram-bot-api": "^0.64.0"
+    "node-telegram-bot-api": "^0.64.0",
+    "zenrows": "^1.3.2"
   }
 }
