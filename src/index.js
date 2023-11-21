@@ -22,6 +22,9 @@ const headers = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0",
 };
 
+// List of valid commands
+const validCommands = [/\/start/, /set language .+/, /^\d+$/];
+
 // Function to extract jokes from HTML using Cheerio
 const extractJokes = ($) => {
   const jokes = [];
@@ -134,4 +137,13 @@ To restart, type:  /start
     
 The default language is English. Enjoy the laughs!`
   );
+});
+
+// Catch-all callback for unsupported commands
+bot.onText(/(.+)/, (msg) => {
+  const isCommand = validCommands.some((command) => command.test(msg.text));
+
+  if (!isCommand) {
+    bot.sendMessage(msg.chat.id, "Sorry, I didn't understand that command. Please use one of the supported commands.");
+  }
 });
