@@ -9,9 +9,11 @@ require("dotenv").config();
 
 const JOKES_URL = process.env.JOKES_URL;
 const TOKEN = process.env.TOKEN;
+const WEBHOOK_URL = process.env.WEBHOOK_URL;
 let userLanguageCode = process.env.DEFAULT_LANG;
 
 const bot = new TelegramBot(TOKEN, { polling: true });
+bot.setWebHook(WEBHOOK_URL);
 const translate = new Translate({ credentials });
 
 const headers = {
