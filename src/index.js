@@ -96,3 +96,17 @@ bot.onText(/^\d+$/, async (msg) => {
 
   jokes.length = 0;
 });
+
+bot.onText(/\/start/, async (msg) => {
+  userLanguageCode = process.env.DEFAULT_LANG;
+
+  bot.sendMessage(
+    msg.chat.id,
+    `Welcome to ChuckBot!
+    
+To set your language, use: "set language <Your Language>"
+To get a joke, enter a number between 1 and 101: "<Joke Number>"
+    
+The default language is English. Enjoy the laughs!`
+  );
+});
