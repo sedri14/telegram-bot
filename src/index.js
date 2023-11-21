@@ -9,11 +9,9 @@ require("dotenv").config();
 
 const JOKES_URL = process.env.JOKES_URL;
 const TOKEN = process.env.TOKEN;
-const WEBHOOK_URL = process.env.WEBHOOK_URL;
 let userLanguageCode = process.env.DEFAULT_LANG;
 
 const bot = new TelegramBot(TOKEN, { polling: true });
-bot.setWebHook(WEBHOOK_URL);
 const translate = new Translate({ credentials });
 
 const headers = {
@@ -25,7 +23,7 @@ const headers = {
 };
 
 // List of valid commands
-const validCommands = [/\/start/, /set language .+/, /^\d+$/];
+const validCommands = [/\/start/, /\/help/, /set language .+/, /^\d+$/];
 
 // Function to extract jokes from HTML using Cheerio
 const extractJokes = ($) => {
@@ -128,17 +126,30 @@ bot.onText(/^\d+$/, async (msg) => {
 // Command to handle the /start command
 bot.onText(/\/start/, async (msg) => {
   userLanguageCode = process.env.DEFAULT_LANG;
+  const startMessage = `
+  Welcome to ChuckBot!
+    
+  To set your language, use:  set language <Your Language>
+  To get a joke, enter a number between 1 and 101:  <Joke Number>
+  To restart, type:  /start
+  To get help, type:  /help
+      
+  The default language is **English**. Enjoy the laughs!
+  `;
+  bot.sendMessage(msg.chat.id, startMessage);
+});
 
-  bot.sendMessage(
-    msg.chat.id,
-    `Welcome to ChuckBot!
+// Command to display help and remind users of valid commands
+bot.onText(/\/help/, (msg) => {
+  const helpMessage = `
+    ChuckBot Commands:
     
-To set your language, use:  set language <Your Language>
-To get a joke, enter a number between 1 and 101:  <Joke Number>
-To restart, type:  /start
-    
-The default language is English. Enjoy the laughs!`
-  );
+    set language <Your Language> - set your language 
+    <Joke Number> - to get a joke (number between 1 and 101)
+    /start - restart the bot 
+    /help - view this help message
+  `;
+  bot.sendMessage(msg.chat.id, helpMessage);
 });
 
 // Catch-all callback for unsupported commands
@@ -146,6 +157,9 @@ bot.onText(/(.+)/, (msg) => {
   const isCommand = validCommands.some((command) => command.test(msg.text));
 
   if (!isCommand) {
-    bot.sendMessage(msg.chat.id, "Sorry, I didn't understand that command. Please use one of the supported commands.");
+    bot.sendMessage(
+      msg.chat.id,
+      "Sorry, I didn't understand that command. Please use one of the supported commands."
+    );
   }
 });
