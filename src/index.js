@@ -36,12 +36,10 @@ const fetchJokes = async () => {
   }
 };
 
-//todo: change to const function
-async function translateText(text, targetLang) {
-  console.log("the joke: " + text + " target lang: " + targetLang);
+const translateText = async (text, targetLang) => {
   let translation = await translate.translate(text, targetLang);
   return translation[0];
-}
+};
 
 bot.onText(/set language (.+)/, async (msg, match) => {
   try {
@@ -65,12 +63,12 @@ bot.onText(/set language (.+)/, async (msg, match) => {
 
 //todo: check for 2 types of errors.
 bot.onText(/^\d+$/, async (msg) => {
-  let userSelection = "";
+  let jokeNumber = "";
   try {
     jokes = await fetchJokes();
-    userSelection = parseInt(msg.text, 10);
+    jokeNumber = parseInt(msg.text, 10);
 
-    if (userSelection < 1 || userSelection > 101) {
+    if (jokeNumber < 1 || jokeNumber > 101) {
       bot.sendMessage(
         msg.chat.id,
         "Please enter a valid number between 1 and 101"
@@ -79,14 +77,12 @@ bot.onText(/^\d+$/, async (msg) => {
     }
 
     if (jokes && jokes.length > 0) {
-      const originalJoke = jokes[userSelection - 1];
-      console.log("jokes not empty, original joke is: " + originalJoke);
-      console.log("jokes arr: " + jokes);
+      const originalJoke = jokes[jokeNumber - 1];
       const translatedJoke = await translateText(
         originalJoke,
         userLanguageCode
       );
-      bot.sendMessage(msg.chat.id, translatedJoke);
+      bot.sendMessage(msg.chat.id, `${jokeNumber}. ${translatedJoke}`);
     } else {
       bot.sendMessage(msg.chat.id, "Could not fetch jokes. Please try again.");
     }
