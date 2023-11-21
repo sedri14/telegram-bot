@@ -43,14 +43,15 @@ async function translateText(text, targetLang) {
   return translation[0];
 }
 
-bot.onText(/set language (.+)/, (msg, match) => {
+bot.onText(/set language (.+)/, async (msg, match) => {
   try {
     const language = match[1].toLowerCase();
     const isoCode = ISO6391.getCode(language);
     if (isoCode) {
       userLanguageCode = isoCode;
+      const noProblem = await translateText("No Problem", userLanguageCode);
+      bot.sendMessage(msg.chat.id, noProblem);
     } else {
-      console.log("Language not found.");
       bot.sendMessage(
         msg.chat.id,
         "Unsupported language. Please choose a valid language."
